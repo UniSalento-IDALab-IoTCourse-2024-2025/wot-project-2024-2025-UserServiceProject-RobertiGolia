@@ -77,24 +77,4 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-
-    /*
-    @Bean
-    public UserDetailsService userDetailsService() {
-
-        UserDetails roberto = User.builder()
-                .username("roberto")
-                .password(passwordEncoder().encode("12345"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails paolo = User.builder()
-                .username("paolo")
-                .password(passwordEncoder().encode("12345"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(roberto, paolo);
-
-    }*/
 }
