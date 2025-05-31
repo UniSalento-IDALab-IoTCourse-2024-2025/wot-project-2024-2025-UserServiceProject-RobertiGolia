@@ -20,7 +20,7 @@ services:
     entrypoint: java -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar /app/app.jar
   my-db:
     image: mongo:5.0
-    container_name: mongodbimage
+    container_name: mongodbIoT
     ports:
       - 27017:27017
     networks:
