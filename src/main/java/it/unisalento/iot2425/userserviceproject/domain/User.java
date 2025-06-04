@@ -15,6 +15,7 @@ public class User {
     private String email;
     private String password;
     private String role;
+    private String email_parent;
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -61,6 +62,14 @@ public class User {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEmail_parent() {
+        return email_parent;
+    }
+
+    public void setEmail_parent(String email_parent) {
+        this.email_parent = email_parent;
     }
 
     public ArrayList<String> getBacklog() {

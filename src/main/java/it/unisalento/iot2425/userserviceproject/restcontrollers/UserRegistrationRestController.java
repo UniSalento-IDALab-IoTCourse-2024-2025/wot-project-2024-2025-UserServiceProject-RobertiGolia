@@ -65,6 +65,7 @@ public class UserRegistrationRestController {
             user.setPassword(passwordEncoder().encode(userDTO.getPassword()));
             user = userRepository.save(user);
             userDTO.setId(user.getId());
+            userDTO.setEmail_parente(user.getEmail_parent());
 
             resultDTO.setResult(RegistrationResultDTO.OK);
             resultDTO.setMessage("Registrazione effettuata con successo");

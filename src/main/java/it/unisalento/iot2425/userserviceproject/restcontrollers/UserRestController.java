@@ -61,6 +61,7 @@ public class UserRestController {
             userDTO.setEmail(user.getEmail());
             userDTO.setCognome(user.getSurname());
             userDTO.setRuolo(user.getRole());
+            userDTO.setEmail_parente(user.getEmail_parent());
             list.add(userDTO);
             //}
 
@@ -99,6 +100,7 @@ public class UserRestController {
         userDto.setNome(user.get().getName());
         userDto.setCognome(user.get().getSurname());
         userDto.setEmail(user.get().getEmail());
+        userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
         return userDto;
     }
@@ -122,6 +124,7 @@ public class UserRestController {
         userDto.setNome(user.get().getName());
         userDto.setCognome(user.get().getSurname());
         userDto.setEmail(user.get().getEmail());
+        userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
         return userDto;
 
@@ -154,6 +157,7 @@ public class UserRestController {
             userDTO.setId(u.getId());
             userDTO.setEmail(u.getEmail());
             userDTO.setRuolo(u.getRole());
+            userDTO.setEmail_parente(u.getEmail_parent());
             resultDTO.setUser(userDTO);
             resultDTO.setMessage("User aggiornato");
             resultDTO.setResult(ResultDTO.AGGIORNATO);
@@ -199,6 +203,7 @@ public class UserRestController {
         userDTO.setCognome(user.get().getSurname());
         userDTO.setEmail(user.get().getEmail());
         userDTO.setRuolo(user.get().getRole());
+        userDTO.setEmail_parente(user.get().getEmail_parent());
         userDTO.setBacklog(user.get().getBacklog());
         resultDTO.setUser(userDTO);
         return resultDTO;
@@ -236,6 +241,7 @@ public class UserRestController {
         userDTO.setCognome(user.get().getSurname());
         userDTO.setEmail(user.get().getEmail());
         userDTO.setRuolo(user.get().getRole());
+        userDTO.setEmail_parente(user.get().getEmail_parent());
         userDTO.setBacklog(user.get().getBacklog());
         resultDTO.setUser(userDTO);
         return resultDTO;
