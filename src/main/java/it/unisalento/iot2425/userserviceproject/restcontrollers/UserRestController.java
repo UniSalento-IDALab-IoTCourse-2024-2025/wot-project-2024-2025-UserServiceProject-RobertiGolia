@@ -365,4 +365,34 @@ public class UserRestController {
 
         return resultDTO;
     }
+
+    @RequestMapping(value="/avaible",
+                    produces = MediaType.APPLICATION_JSON_VALUE,
+                    method = RequestMethod.GET)
+    public UsersListDTO getUsersAvaible(){
+
+        List<User> users = userRepository.findAll();
+        //crea l'oggetto
+        List<UserDTO> list = new ArrayList<UserDTO>();
+        for (User user : users) {
+            //if (user.getRole() == null || user.getRole().equals("utente")) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setNome(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setCognome(user.getSurname());
+            userDTO.setRuolo(user.getRole());
+            userDTO.setEmail_parente(user.getEmail_parent());
+            userDTO.setDisponibile(user.isAvailable());
+            if (user.isAvailable()) {
+                list.add(userDTO);
+            }
+            //}
+
+        }
+
+        UsersListDTO usersListDTO = new UsersListDTO();
+        usersListDTO.setUsersList(list);
+        return usersListDTO;
+    }
 }
