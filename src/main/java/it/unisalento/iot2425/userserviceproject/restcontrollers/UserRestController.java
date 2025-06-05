@@ -173,7 +173,6 @@ public class UserRestController {
     }
 
 
-
     //viene usato dagli altri microservizi per aggiornare il backlog
     @RequestMapping(value = "/setBacklogOtherService/{message}",
             method = RequestMethod.PUT,
@@ -366,16 +365,16 @@ public class UserRestController {
         return resultDTO;
     }
 
-    @RequestMapping(value="/avaible",
-                    produces = MediaType.APPLICATION_JSON_VALUE,
-                    method = RequestMethod.GET)
-    public UsersListDTO getUsersAvaible(){
+    @RequestMapping(value = "/avaible",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.GET)
+    public UsersListDTO getUsersAvaible() {
 
         List<User> users = userRepository.findAll();
         //crea l'oggetto
         List<UserDTO> list = new ArrayList<UserDTO>();
         for (User user : users) {
-            //if (user.getRole() == null || user.getRole().equals("utente")) {
+
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setNome(user.getName());
@@ -387,7 +386,6 @@ public class UserRestController {
             if (user.isAvailable()) {
                 list.add(userDTO);
             }
-            //}
 
         }
 
