@@ -10,6 +10,7 @@ public class UserDTO {
     private String password;
     private String ruolo;
     private String email_parente;
+    private boolean disponibile;
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -67,6 +68,14 @@ public class UserDTO {
 
     public void setEmail_parente(String email_parente) {
         this.email_parente = email_parente;
+    }
+
+    public boolean isDisponibile() {
+        return disponibile;
+    }
+
+    public void setDisponibile(boolean disponibile) {
+        this.disponibile = disponibile;
     }
 
     public ArrayList<String> getBacklog() {

@@ -16,6 +16,7 @@ public class User {
     private String password;
     private String role;
     private String email_parent;
+    private boolean available;
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -70,6 +71,14 @@ public class User {
 
     public void setEmail_parent(String email_parent) {
         this.email_parent = email_parent;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public ArrayList<String> getBacklog() {

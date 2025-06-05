@@ -59,14 +59,21 @@ public class UserRegistrationRestController {
             if (userDTO.getRuolo() == null) {
                 user.setRole("utente");
             } else {
+                if (!userDTO.getRuolo().equals("utente") || !userDTO.getRuolo().equals("amministratore")) {
+                    user.setAvailable(true);
+                } else {
+                    user.setAvailable(false);
+                }
                 user.setRole(userDTO.getRuolo());
             }
             //codifica la password
             user.setPassword(passwordEncoder().encode(userDTO.getPassword()));
+
             user = userRepository.save(user);
             userDTO.setId(user.getId());
             userDTO.setEmail_parente(user.getEmail_parent());
 
+            userDTO.setDisponibile(user.isAvailable());
             resultDTO.setResult(RegistrationResultDTO.OK);
             resultDTO.setMessage("Registrazione effettuata con successo");
             resultDTO.getLog().add(resultDTO.getMessage());

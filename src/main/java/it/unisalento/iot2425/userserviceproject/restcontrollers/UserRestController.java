@@ -62,6 +62,7 @@ public class UserRestController {
             userDTO.setCognome(user.getSurname());
             userDTO.setRuolo(user.getRole());
             userDTO.setEmail_parente(user.getEmail_parent());
+            userDTO.setDisponibile(user.isAvailable());
             list.add(userDTO);
             //}
 
@@ -102,6 +103,7 @@ public class UserRestController {
         userDto.setEmail(user.get().getEmail());
         userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
+        userDto.setDisponibile(user.get().isAvailable());
         return userDto;
     }
 
@@ -126,6 +128,7 @@ public class UserRestController {
         userDto.setEmail(user.get().getEmail());
         userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
+        userDto.setDisponibile(user.get().isAvailable());
         return userDto;
 
     }
@@ -158,6 +161,7 @@ public class UserRestController {
             userDTO.setEmail(u.getEmail());
             userDTO.setRuolo(u.getRole());
             userDTO.setEmail_parente(u.getEmail_parent());
+            userDTO.setDisponibile(user.get().isAvailable());
             resultDTO.setUser(userDTO);
             resultDTO.setMessage("User aggiornato");
             resultDTO.setResult(ResultDTO.AGGIORNATO);
@@ -205,6 +209,7 @@ public class UserRestController {
         userDTO.setRuolo(user.get().getRole());
         userDTO.setEmail_parente(user.get().getEmail_parent());
         userDTO.setBacklog(user.get().getBacklog());
+        userDTO.setDisponibile(user.get().isAvailable());
         resultDTO.setUser(userDTO);
         return resultDTO;
     }
@@ -242,6 +247,7 @@ public class UserRestController {
         userDTO.setEmail(user.get().getEmail());
         userDTO.setRuolo(user.get().getRole());
         userDTO.setEmail_parente(user.get().getEmail_parent());
+        userDTO.setDisponibile(user.get().isAvailable());
         userDTO.setBacklog(user.get().getBacklog());
         resultDTO.setUser(userDTO);
         return resultDTO;
