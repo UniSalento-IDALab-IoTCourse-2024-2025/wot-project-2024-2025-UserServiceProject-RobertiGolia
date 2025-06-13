@@ -1,5 +1,8 @@
 package it.unisalento.iot2425.userserviceproject.restcontrollers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.iot2425.userserviceproject.di.IPaymentService;
 import it.unisalento.iot2425.userserviceproject.domain.User;
 import it.unisalento.iot2425.userserviceproject.dto.*;
@@ -8,6 +11,7 @@ import it.unisalento.iot2425.userserviceproject.repositories.UserRepository;
 import it.unisalento.iot2425.userserviceproject.security.JwtUtilities;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -105,7 +109,7 @@ public class UserRestController {
         userDto.setEmail(user.get().getEmail());
         userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
-        if(userDto.getRuolo().equals("utente")) {
+        if (userDto.getRuolo().equals("utente")) {
             userDto.setEmail_parente(user.get().getEmail_parent());
         } else if (userDto.getRuolo().equals("autista")) {
             userDto.setEmail_parente("");
@@ -191,6 +195,77 @@ public class UserRestController {
         return resultDTO;
     }
 
+    @RequestMapping(value = "/deleteAutista",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResultDTO deleteAutista(@RequestHeader("Authorization") String token) throws UserNotFoundException, JsonProcessingException {
+        ResultDTO resultDTO = new ResultDTO();
+
+        resultDTO.setUser(null);
+        resultDTO.setMessage("Utente non trovato");
+        resultDTO.setResult(ResultDTO.ERRORE);
+
+        // Rimuovi "Bearer " dalla stringa dell'header per ottenere solo il token JWT.
+        String jwtToken = token.substring(7);
+        // Verifica e decodifica il token JWT utilizzando il segreto condiviso.
+        Date expirationDate = jwtUtilities.extractExpiration(jwtToken);
+
+        if (expirationDate.before(new Date())) {
+            // Token scaduto
+            return null;
+        }
+        //prende l'id dell'utente per collegarlo ad un mezzo
+        String userId = jwtUtilities.extractClaim(jwtToken, claims -> claims.get("userId", String.class));
+
+        //chiamo il microservizio di trip per vedere se l'autista ha delle corse ancora in corso, prima di eliminare l'account
+        String url = "http://TripSerProIoT:8080/api/trip/corse";
+        WebClient webClient = webClientBuilder.build();
+        String responseTrip = webClient.get()
+                .uri(url)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        System.out.println("Risposta da users-service: " + responseTrip);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode root = objectMapper.readTree(responseTrip);
+
+        // Accedi all'array "usersList"
+        JsonNode usersList = root.path("usersList");
+        // Verifica che l'array non sia vuoto e prendi il primo elemento
+        //scorriamo tutta la lista per vedere se è presente l'autista
+        for (int i = 0; i < usersList.size(); i++) {
+            JsonNode firstUser = usersList.get(i);
+
+            String idAutista = firstUser.path("idAutista").asText();
+            System.out.println("IdAutista: " + idAutista);
+            if (idAutista.equals(userId)) {
+                resultDTO.setMessage("Devi terminare prima la corsa");
+                resultDTO.setResult(ResultDTO.ERRORE);
+                return resultDTO;
+            }
+        }
+
+        //se esce dal ciclo for allora significa che non ha trovato l'autista nell'elenco delle corse
+        Optional<User> user = userRepository.findById(userId);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.get().getId());
+        userDTO.setNome(user.get().getName());
+        userDTO.setCognome(user.get().getSurname());
+        userDTO.setEmail(user.get().getEmail());
+        userDTO.setRuolo(user.get().getRole());
+        userDTO.setData(userDTO.getData());
+        userDTO.setN_ore(user.get().getN_hours());
+        userDTO.setEmail_parente(user.get().getEmail_parent());
+        userRepository.delete(user.get());
+        resultDTO.setResult(ResultDTO.OK);
+        resultDTO.setMessage("Autista eliminato");
+        return resultDTO;
+    }
+
     @RequestMapping(value = "/changeDispo/{id}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -206,12 +281,14 @@ public class UserRestController {
         user.ifPresent(u -> {
             if (u.isAvailable()) {
                 u.setAvailable(false);
+                resultDTO.setMessage(u.getName() + " non disponibile");
             } else {
                 u.setAvailable(true);
+                resultDTO.setMessage(u.getName() + " disponibile");
             }
             userRepository.save(u);
 
-            resultDTO.setMessage("User aggiornato");
+
             resultDTO.setResult(ResultDTO.AGGIORNATO);
             resultDTO.getLog().add(resultDTO.getMessage());
 
@@ -408,7 +485,7 @@ public class UserRestController {
     }
 
 
-    @RequestMapping(value = "/delete/{idUser}",
+    @RequestMapping(value = "/deleteUser/{idUser}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResultDTO deleteUser(@PathVariable String idUser) {
