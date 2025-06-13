@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 
 import static it.unisalento.iot2425.userserviceproject.configuration.SecurityConfig.passwordEncoder;
@@ -56,22 +58,48 @@ public class UserRegistrationRestController {
             user.setName(userDTO.getNome());
             user.setSurname(userDTO.getCognome());
             user.setEmail(userDTO.getEmail());
+            user.setRole(userDTO.getRuolo());
             if (userDTO.getRuolo() == null) {
                 user.setRole("utente");
+                user.setAvailable(false);
+                user.setData(userDTO.getData());
+                user.setEmail_parent(userDTO.getEmail_parente());
+                System.out.println("Email parente: " + userDTO.getEmail_parente());
             } else {
-                if (!userDTO.getRuolo().equals("utente") || !userDTO.getRuolo().equals("amministratore")) {
-                    user.setAvailable(true);
-                } else {
-                    user.setAvailable(false);
+                String ruolo = userDTO.getRuolo();
+
+                switch (ruolo) {
+                    case "utente":
+                        user.setRole("utente");
+                        user.setAvailable(false);
+                        user.setData(userDTO.getData());
+                        user.setEmail_parent(userDTO.getEmail_parente());
+                        System.out.println("Email parente: " + userDTO.getEmail_parente());
+                        break;
+
+                    case "amministratore":
+                        user.setRole("amministratore");
+                        user.setAvailable(false); // o true, a seconda della logica che desideri
+                        break;
+
+                    default: // trattiamo come autista o altro ruolo
+                        user.setRole(ruolo);
+                        user.setAvailable(true);
+                        if (userDTO.getData() == null) {
+                            user.setData(new Date());
+                        } else {
+                            user.setData(userDTO.getData());
+                            user.setN_hours(userDTO.getN_ore());
+                        }
+                        break;
                 }
-                user.setRole(userDTO.getRuolo());
             }
+
             //codifica la password
             user.setPassword(passwordEncoder().encode(userDTO.getPassword()));
 
             user = userRepository.save(user);
-            userDTO.setId(user.getId());
-            userDTO.setEmail_parente(user.getEmail_parent());
+
 
             userDTO.setDisponibile(user.isAvailable());
             resultDTO.setResult(RegistrationResultDTO.OK);

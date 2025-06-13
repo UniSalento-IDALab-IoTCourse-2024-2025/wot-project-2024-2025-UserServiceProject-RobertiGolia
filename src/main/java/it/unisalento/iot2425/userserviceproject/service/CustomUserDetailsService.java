@@ -17,16 +17,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { //l'eccezione viene gestita da Spring
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Optional<User> user = userRepository.findByEmail(email);
+        final Optional<User> user = userRepository.findByEmail(email);
 
         if(user.isEmpty()) {
             throw new UsernameNotFoundException(email);
         }
 
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(user.get().getEmail()).password(user.get().getPassword()).roles("USER").build(); //user.get perché è un Optionalf
-
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(user.get().getEmail()).password(user.get().getPassword()).roles("USER").build();
 
         return userDetails;
     }

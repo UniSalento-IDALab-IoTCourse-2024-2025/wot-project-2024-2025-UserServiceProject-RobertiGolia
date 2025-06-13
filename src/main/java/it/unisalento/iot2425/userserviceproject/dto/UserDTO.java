@@ -1,6 +1,7 @@
 package it.unisalento.iot2425.userserviceproject.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UserDTO {
     private String id;
@@ -11,6 +12,8 @@ public class UserDTO {
     private String ruolo;
     private String email_parente;
     private boolean disponibile;
+    private Date data; //data e orario per gestire le prenotazioni disponibili per l'autista
+    private int n_ore; //indica il numero di ore nella quale è disponibile
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -76,6 +79,22 @@ public class UserDTO {
 
     public void setDisponibile(boolean disponibile) {
         this.disponibile = disponibile;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public int getN_ore() {
+        return n_ore;
+    }
+
+    public void setN_ore(int n_ore) {
+        this.n_ore = n_ore;
     }
 
     public ArrayList<String> getBacklog() {

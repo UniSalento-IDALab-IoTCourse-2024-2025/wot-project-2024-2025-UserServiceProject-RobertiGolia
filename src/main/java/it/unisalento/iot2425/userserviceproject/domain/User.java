@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Document("user")
 public class User {
@@ -17,6 +18,8 @@ public class User {
     private String role;
     private String email_parent;
     private boolean available;
+    private Date data;
+    private int n_hours;
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -79,6 +82,22 @@ public class User {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public int getN_hours() {
+        return n_hours;
+    }
+
+    public void setN_hours(int n_hours) {
+        this.n_hours = n_hours;
     }
 
     public ArrayList<String> getBacklog() {
