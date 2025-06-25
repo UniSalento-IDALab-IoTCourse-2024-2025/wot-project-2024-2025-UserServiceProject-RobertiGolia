@@ -8,7 +8,8 @@ public class RegistrationResultDTO {
 
     public final static int MISSING_NAME = 2;
     public final static int MISSING_USERNAME = 3;
-    public final static int EMAIL_NOT_VALID = 4;
+    public final static int USERNAME_NOD_VALID = 4;
+
     //AGGIUNGERE ALTRI CODICI ERRORE, DATI_MANCANTI... VOCABOLARIO DI ERRORI
     public final static int GENERIC_ERROR = 99;
 

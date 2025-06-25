@@ -1,10 +1,14 @@
 package it.unisalento.iot2425.userserviceproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class UserDTO {
     private String id;
+    private String username;
     private String nome;
     private String cognome;
     private String email;
@@ -12,7 +16,10 @@ public class UserDTO {
     private String ruolo;
     private String email_parente;
     private boolean disponibile;
-    private Date data; //data e orario per gestire le prenotazioni disponibili per l'autista
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate data; //data e orario per gestire le prenotazioni disponibili per l'autista
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate nascita;
     private int n_ore; //indica il numero di ore nella quale è disponibile
     private ArrayList<String> backlog = new ArrayList<>();
 
@@ -30,6 +37,14 @@ public class UserDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getNome() {
@@ -81,12 +96,20 @@ public class UserDTO {
         this.disponibile = disponibile;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    public LocalDate getNascita() {
+        return nascita;
+    }
+
+    public void setNascita(LocalDate nascita) {
+        this.nascita = nascita;
     }
 
     public int getN_ore() {

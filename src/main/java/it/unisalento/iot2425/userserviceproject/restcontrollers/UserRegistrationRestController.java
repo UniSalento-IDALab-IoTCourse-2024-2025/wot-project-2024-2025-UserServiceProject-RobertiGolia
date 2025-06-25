@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.text.html.Option;
 import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static it.unisalento.iot2425.userserviceproject.configuration.SecurityConfig.passwordEncoder;
@@ -48,13 +51,19 @@ public class UserRegistrationRestController {
         //modifica l'id
         //prevede una modifica all'interno del DataBase
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
+        List<User> username = userRepository.findByNameAndSurname(userDTO.getNome(), userDTO.getCognome());
         if (!existingUser.isEmpty()) {
             resultDTO.setResult(RegistrationResultDTO.EMAIL_ALREADY_EXISTS);
             resultDTO.setMessage("La mail è già associata ad un altro utente");
             return resultDTO;
+        }
+        if (!username.isEmpty()) {
+            resultDTO.setResult(RegistrationResultDTO.USERNAME_NOD_VALID);
+            resultDTO.setMessage("Lo username è già in uso");
+            return resultDTO;
         } else {
-
             User user = new User();
+            user.setUsername(userDTO.getUsername());
             user.setName(userDTO.getNome());
             user.setSurname(userDTO.getCognome());
             user.setEmail(userDTO.getEmail());
@@ -86,7 +95,7 @@ public class UserRegistrationRestController {
                         user.setRole(ruolo);
                         user.setAvailable(true);
                         if (userDTO.getData() == null) {
-                            user.setData(new Date());
+                            user.setData(LocalDate.of(2024, 6, 18));
                         } else {
                             user.setData(userDTO.getData());
                             user.setN_hours(userDTO.getN_ore());
@@ -97,7 +106,7 @@ public class UserRegistrationRestController {
 
             //codifica la password
             user.setPassword(passwordEncoder().encode(userDTO.getPassword()));
-
+            user.setData_nascita(userDTO.getNascita());
             user = userRepository.save(user);
 
 
@@ -105,6 +114,7 @@ public class UserRegistrationRestController {
             resultDTO.setResult(RegistrationResultDTO.OK);
             resultDTO.setMessage("Registrazione effettuata con successo");
             resultDTO.getLog().add(resultDTO.getMessage());
+            resultDTO.setUser(userDTO);
         }
         return resultDTO;
     }

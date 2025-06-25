@@ -60,10 +60,12 @@ public class UserRestController {
         for (User user : users) {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
             userDTO.setNome(user.getName());
             userDTO.setEmail(user.getEmail());
             userDTO.setCognome(user.getSurname());
             userDTO.setRuolo(user.getRole());
+            userDTO.setNascita(user.getData_nascita());
             if (userDTO.getRuolo().equals("utente")) {
                 userDTO.setEmail_parente(user.getEmail_parent());
                 userDTO.setDisponibile(false);
@@ -104,11 +106,13 @@ public class UserRestController {
         }
         UserDTO userDto = new UserDTO();
         userDto.setId(user.get().getId());
+        userDto.setUsername(user.get().getUsername());
         userDto.setNome(user.get().getName());
         userDto.setCognome(user.get().getSurname());
         userDto.setEmail(user.get().getEmail());
         userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
+        userDto.setNascita(user.get().getData_nascita());
         if (userDto.getRuolo().equals("utente")) {
             userDto.setEmail_parente(user.get().getEmail_parent());
         } else if (userDto.getRuolo().equals("autista")) {
@@ -135,11 +139,48 @@ public class UserRestController {
         }
         UserDTO userDto = new UserDTO();
         userDto.setId(user.get().getId());
+        userDto.setUsername(user.get().getUsername());
         userDto.setNome(user.get().getName());
         userDto.setCognome(user.get().getSurname());
         userDto.setEmail(user.get().getEmail());
         userDto.setEmail_parente(user.get().getEmail_parent());
         userDto.setRuolo(user.get().getRole());
+        userDto.setNascita(user.get().getData_nascita());
+        if (userDto.getRuolo().equals("utente")) {
+            userDto.setEmail_parente(user.get().getEmail_parent());
+            userDto.setDisponibile(false);
+            userDto.setData(null);
+            userDto.setN_ore(0);
+        } else if (userDto.getRuolo().equals("autista")) {
+            userDto.setEmail_parente("");
+            userDto.setDisponibile(user.get().isAvailable());
+            userDto.setData(user.get().getData());
+            userDto.setN_ore(user.get().getN_hours());
+        }
+        return userDto;
+
+    }
+
+    @RequestMapping(value = "/username/{username}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserDTO findByUsername(@PathVariable String username) throws UserNotFoundException {
+
+        Optional<User> user = userRepository.findByUsername(username);
+
+        if (user.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        UserDTO userDto = new UserDTO();
+        userDto.setId(user.get().getId());
+        userDto.setUsername(user.get().getUsername());
+        userDto.setNome(user.get().getName());
+        userDto.setCognome(user.get().getSurname());
+        userDto.setEmail(user.get().getEmail());
+        userDto.setEmail_parente(user.get().getEmail_parent());
+        userDto.setRuolo(user.get().getRole());
+        userDto.setNascita(user.get().getData_nascita());
         if (userDto.getRuolo().equals("utente")) {
             userDto.setEmail_parente(user.get().getEmail_parent());
             userDto.setDisponibile(false);
@@ -169,22 +210,24 @@ public class UserRestController {
 
         user.ifPresent(u -> {
             userRepository.save(u);
-            userDTO.setId(u.getId());
-            userDTO.setEmail(u.getEmail());
-            userDTO.setRuolo(u.getRole());
-            if (userDTO.getRuolo().equals("utente")) {
-                userDTO.setEmail_parente(u.getEmail_parent());
-                userDTO.setDisponibile(false);
-                userDTO.setData(null);
-                userDTO.setN_ore(0);
-            } else if (userDTO.getRuolo().equals("autista")) {
-                userDTO.setEmail_parente("");
-                userDTO.setDisponibile(user.get().isAvailable());
-                userDTO.setData(userDTO.getData());
-                userDTO.setN_ore(user.get().getN_hours());
+            u.setId(userDTO.getId());
+            u.setUsername(userDTO.getUsername());
+            u.setEmail(userDTO.getEmail());
+            u.setRole(userDTO.getRuolo());
+            u.setData_nascita(userDTO.getNascita());
+            if (u.getRole().equals("utente")) {
+                u.setEmail_parent(userDTO.getEmail_parente());
+                u.setAvailable(false);
+                u.setData(null);
+                u.setN_hours(0);
+            } else if (u.getRole().equals("autista")) {
+                u.setEmail_parent("");
+                u.setAvailable(userDTO.isDisponibile());
+                u.setData(userDTO.getData());
+                u.setN_hours(userDTO.getN_ore());
             }
 
-
+            userRepository.save(u);
             resultDTO.setUser(userDTO);
             resultDTO.setMessage("User aggiornato");
             resultDTO.setResult(ResultDTO.AGGIORNATO);
@@ -253,6 +296,7 @@ public class UserRestController {
         Optional<User> user = userRepository.findById(userId);
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.get().getId());
+        userDTO.setUsername(user.get().getUsername());
         userDTO.setNome(user.get().getName());
         userDTO.setCognome(user.get().getSurname());
         userDTO.setEmail(user.get().getEmail());
@@ -260,6 +304,7 @@ public class UserRestController {
         userDTO.setData(userDTO.getData());
         userDTO.setN_ore(user.get().getN_hours());
         userDTO.setEmail_parente(user.get().getEmail_parent());
+        userDTO.setNascita(user.get().getData_nascita());
         userRepository.delete(user.get());
         resultDTO.setResult(ResultDTO.OK);
         resultDTO.setMessage("Autista eliminato");
@@ -328,9 +373,11 @@ public class UserRestController {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.get().getId());
         userDTO.setNome(user.get().getName());
+        userDTO.setUsername(user.get().getUsername());
         userDTO.setCognome(user.get().getSurname());
         userDTO.setEmail(user.get().getEmail());
         userDTO.setRuolo(user.get().getRole());
+        userDTO.setNascita(user.get().getData_nascita());
         if (userDTO.getRuolo().equals("utente")) {
             userDTO.setEmail_parente(user.get().getEmail_parent());
             userDTO.setDisponibile(false);
@@ -373,9 +420,11 @@ public class UserRestController {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.get().getId());
         userDTO.setNome(user.get().getName());
+        userDTO.setUsername(user.get().getUsername());
         userDTO.setCognome(user.get().getSurname());
         userDTO.setEmail(user.get().getEmail());
         userDTO.setRuolo(user.get().getRole());
+        userDTO.setNascita(user.get().getData_nascita());
         if (userDTO.getRuolo().equals("utente")) {
             userDTO.setEmail_parente(user.get().getEmail_parent());
             userDTO.setDisponibile(false);
@@ -518,9 +567,11 @@ public class UserRestController {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setNome(user.getName());
+            userDTO.setUsername(user.getUsername());
             userDTO.setEmail(user.getEmail());
             userDTO.setCognome(user.getSurname());
             userDTO.setRuolo(user.getRole());
+            userDTO.setNascita(user.getData_nascita());
             if (userDTO.getRuolo().equals("autista")) {
                 userDTO.setEmail_parente("");
                 userDTO.setDisponibile(user.isAvailable());

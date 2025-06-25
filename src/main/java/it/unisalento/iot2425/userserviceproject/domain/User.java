@@ -1,8 +1,10 @@
 package it.unisalento.iot2425.userserviceproject.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,6 +13,7 @@ public class User {
 
     @Id
     private String id;
+    private String username;
     private String name;
     private String surname;
     private String email;
@@ -18,7 +21,11 @@ public class User {
     private String role;
     private String email_parent;
     private boolean available;
-    private Date data;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate data;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate data_nascita;
     private int n_hours;
     private ArrayList<String> backlog = new ArrayList<>();
 
@@ -36,6 +43,14 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {
@@ -84,12 +99,20 @@ public class User {
         this.available = available;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    public LocalDate getData_nascita() {
+        return data_nascita;
+    }
+
+    public void setData_nascita(LocalDate data_nascita) {
+        this.data_nascita = data_nascita;
     }
 
     public int getN_hours() {
