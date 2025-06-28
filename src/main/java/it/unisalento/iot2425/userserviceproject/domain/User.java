@@ -27,6 +27,8 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate data_nascita;
     private int n_hours;
+    private int n_corse;
+    private int n_posti;
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -121,6 +123,22 @@ public class User {
 
     public void setN_hours(int n_hours) {
         this.n_hours = n_hours;
+    }
+
+    public int getN_corse() {
+        return n_corse;
+    }
+
+    public void setN_corse(int n_corse) {
+        this.n_corse = n_corse;
+    }
+
+    public int getN_posti() {
+        return n_posti;
+    }
+
+    public void setN_posti(int n_posti) {
+        this.n_posti = n_posti;
     }
 
     public ArrayList<String> getBacklog() {

@@ -85,7 +85,6 @@ public class UserRegistrationRestController {
                         user.setEmail_parent(userDTO.getEmail_parente());
                         System.out.println("Email parente: " + userDTO.getEmail_parente());
                         break;
-
                     case "amministratore":
                         user.setRole("amministratore");
                         user.setAvailable(false); // o true, a seconda della logica che desideri
@@ -100,6 +99,7 @@ public class UserRegistrationRestController {
                             user.setData(userDTO.getData());
                             user.setN_hours(userDTO.getN_ore());
                         }
+                        user.setN_posti(userDTO.getN_posti());
                         break;
                 }
             }

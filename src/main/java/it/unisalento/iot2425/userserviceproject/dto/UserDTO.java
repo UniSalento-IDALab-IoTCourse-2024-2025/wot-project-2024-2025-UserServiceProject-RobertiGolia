@@ -21,6 +21,8 @@ public class UserDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate nascita;
     private int n_ore; //indica il numero di ore nella quale è disponibile
+    private int n_corse;
+    private int n_posti;
     private ArrayList<String> backlog = new ArrayList<>();
 
     public String getPassword() {
@@ -118,6 +120,22 @@ public class UserDTO {
 
     public void setN_ore(int n_ore) {
         this.n_ore = n_ore;
+    }
+
+    public int getN_corse() {
+        return n_corse;
+    }
+
+    public void setN_corse(int n_corse) {
+        this.n_corse = n_corse;
+    }
+
+    public int getN_posti() {
+        return n_posti;
+    }
+
+    public void setN_posti(int n_posti) {
+        this.n_posti = n_posti;
     }
 
     public ArrayList<String> getBacklog() {

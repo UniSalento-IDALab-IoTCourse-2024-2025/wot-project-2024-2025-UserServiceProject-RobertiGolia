@@ -74,6 +74,7 @@ public class UserRestController {
                 userDTO.setEmail_parente("");
                 userDTO.setDisponibile(user.isAvailable());
                 userDTO.setData(user.getData());
+                userDTO.setN_posti(user.getN_posti());
             }
             list.add(userDTO);
         }
@@ -120,6 +121,7 @@ public class UserRestController {
             userDto.setDisponibile(user.get().isAvailable());
             userDto.setData(user.get().getData());
             userDto.setN_ore(user.get().getN_hours());
+            userDto.setN_posti(user.get().getN_posti());
         }
 
         return userDto;
@@ -156,6 +158,7 @@ public class UserRestController {
             userDto.setDisponibile(user.get().isAvailable());
             userDto.setData(user.get().getData());
             userDto.setN_ore(user.get().getN_hours());
+            userDto.setN_posti(user.get().getN_posti());
         }
         return userDto;
 
@@ -191,6 +194,7 @@ public class UserRestController {
             userDto.setDisponibile(user.get().isAvailable());
             userDto.setData(user.get().getData());
             userDto.setN_ore(user.get().getN_hours());
+            userDto.setN_posti(user.get().getN_posti());
         }
         return userDto;
 
@@ -225,6 +229,7 @@ public class UserRestController {
                 u.setAvailable(userDTO.isDisponibile());
                 u.setData(userDTO.getData());
                 u.setN_hours(userDTO.getN_ore());
+                u.setN_posti(userDTO.getN_posti());
             }
 
             userRepository.save(u);
@@ -237,6 +242,239 @@ public class UserRestController {
 
         return resultDTO;
     }
+
+    @RequestMapping(
+            value = "/addCorsa/{idAutista}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResultDTO addCorsa(@PathVariable String idAutista) throws UserNotFoundException {
+        ResultDTO resultDTO = new ResultDTO();
+
+        Optional<User> optionalUser = userRepository.findById(idAutista);
+        if (optionalUser.isEmpty()) {
+            resultDTO.setUser(null);
+            resultDTO.setMessage("Utente non trovato");
+            resultDTO.setResult(ResultDTO.ERRORE);
+            resultDTO.getLog().add(resultDTO.getMessage());
+            return resultDTO;
+        }
+
+        User user = optionalUser.get();
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setEmail_parente(user.getEmail_parent());
+        userDTO.setRuolo(user.getRole());
+        userDTO.setData(user.getData());
+        userDTO.setNome(user.getName());
+        userDTO.setCognome(user.getSurname());
+        userDTO.setDisponibile(user.isAvailable());
+        userDTO.setN_ore(user.getN_hours());
+
+        switch (user.getRole()) {
+            case "utente":
+                user.setEmail_parent(userDTO.getEmail_parente());
+                user.setAvailable(false);
+                user.setData(null);
+                user.setN_hours(0);
+                break;
+
+            case "autista":
+                user.setEmail_parent("");
+                user.setAvailable(userDTO.isDisponibile());
+                user.setData(userDTO.getData());
+                user.setN_hours(userDTO.getN_ore());
+                System.out.println("numero corse dell'utente: " + user.getEmail() + " " + user.getN_corse());
+                if (user.getN_corse() == 0) {
+                    user.setN_corse(1);
+                } else {
+                    user.setN_corse(user.getN_corse() + 1);
+                }
+                user.setN_posti(userDTO.getN_posti());
+
+                break;
+
+            default:
+                resultDTO.setUser(null);
+                resultDTO.setMessage("Ruolo utente non valido");
+                resultDTO.setResult(ResultDTO.ERRORE);
+                resultDTO.getLog().add(resultDTO.getMessage());
+                return resultDTO;
+        }
+        userDTO.setN_corse(user.getN_corse());
+        userRepository.save(user);
+
+        resultDTO.setUser(userDTO);
+        resultDTO.setMessage("User aggiornato");
+        resultDTO.setResult(ResultDTO.AGGIORNATO);
+        resultDTO.getLog().add(resultDTO.getMessage());
+
+        return resultDTO;
+    }
+
+    @RequestMapping(value = "/remCorsa/{idAutista}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResultDTO remCorsa(@PathVariable String idAutista) throws UserNotFoundException {
+        ResultDTO resultDTO = new ResultDTO();
+
+        Optional<User> optionalUser = userRepository.findById(idAutista);
+        if (optionalUser.isEmpty()) {
+            resultDTO.setUser(null);
+            resultDTO.setMessage("Utente non trovato");
+            resultDTO.setResult(ResultDTO.ERRORE);
+            resultDTO.getLog().add(resultDTO.getMessage());
+            return resultDTO;
+        }
+
+        User user = optionalUser.get();
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setEmail_parente(user.getEmail_parent());
+        userDTO.setRuolo(user.getRole());
+        userDTO.setData(user.getData());
+        userDTO.setNome(user.getName());
+        userDTO.setCognome(user.getSurname());
+        userDTO.setDisponibile(user.isAvailable());
+        userDTO.setN_ore(user.getN_hours());
+
+        switch (user.getRole()) {
+            case "utente":
+                user.setEmail_parent(userDTO.getEmail_parente());
+                user.setAvailable(false);
+                user.setData(null);
+                user.setN_hours(0);
+                break;
+
+            case "autista":
+                user.setEmail_parent("");
+                user.setAvailable(userDTO.isDisponibile());
+                user.setData(userDTO.getData());
+                user.setN_hours(userDTO.getN_ore());
+                System.out.println("numero corse dell'utente: " + user.getEmail() + " " + user.getN_corse());
+                if (user.getN_corse() > 0) {
+                    user.setN_corse(user.getN_corse() - 1);
+                }
+                user.setN_posti(userDTO.getN_posti());
+
+                break;
+
+            default:
+                resultDTO.setUser(null);
+                resultDTO.setMessage("Ruolo utente non valido");
+                resultDTO.setResult(ResultDTO.ERRORE);
+                resultDTO.getLog().add(resultDTO.getMessage());
+                return resultDTO;
+        }
+        userDTO.setN_corse(user.getN_corse());
+        userRepository.save(user);
+
+        resultDTO.setUser(userDTO);
+        resultDTO.setMessage("User aggiornato");
+        resultDTO.setResult(ResultDTO.AGGIORNATO);
+        resultDTO.getLog().add(resultDTO.getMessage());
+
+        return resultDTO;
+    }
+
+    @RequestMapping(
+            value = "/takeSeat/{idAutista}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResultDTO takeSeat(@PathVariable String idAutista) {
+        ResultDTO resultDTO = new ResultDTO();
+
+        Optional<User> optionalUser = userRepository.findById(idAutista);
+        if (optionalUser.isEmpty()) {
+            return buildErrorResult("Utente non trovato");
+        }
+
+        User user = optionalUser.get();
+
+        if (!"autista".equals(user.getRole())) {
+            return buildErrorResult("Ruolo utente non valido");
+        }
+
+        if (user.getN_posti() <= 0) {
+            return buildErrorResult("Posti non disponibili");
+        }
+
+        user.setN_posti(user.getN_posti() - 1);
+        userRepository.save(user);
+
+        ResultDTO successResult = new ResultDTO();
+        successResult.setMessage("Posto prenotato");
+        successResult.setResult(ResultDTO.AGGIORNATO);
+        successResult.setUser(buildUserDTO(user));
+
+        return successResult;
+    }
+
+    @RequestMapping(
+            value = "/leaveSeat/{idAutista}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResultDTO leaveSeat(@PathVariable String idAutista) {
+        ResultDTO resultDTO = new ResultDTO();
+
+        Optional<User> optionalUser = userRepository.findById(idAutista);
+        if (optionalUser.isEmpty()) {
+            return buildErrorResult("Utente non trovato");
+        }
+
+        User user = optionalUser.get();
+
+        if (!"autista".equals(user.getRole())) {
+            return buildErrorResult("Ruolo utente non valido");
+        }
+
+        user.setN_posti(user.getN_posti() + 1);
+        userRepository.save(user);
+
+        ResultDTO successResult = new ResultDTO();
+        successResult.setMessage("Posto lasciato");
+        successResult.setResult(ResultDTO.AGGIORNATO);
+        successResult.setUser(buildUserDTO(user));
+
+        return successResult;
+    }
+
+    /** Costruisce un UserDTO a partire da un User */
+    private UserDTO buildUserDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setEmail_parente(user.getEmail_parent());
+        dto.setRuolo(user.getRole());
+        dto.setData(user.getData());
+        dto.setNome(user.getName());
+        dto.setCognome(user.getSurname());
+        dto.setDisponibile(user.isAvailable());
+        dto.setN_ore(user.getN_hours());
+        dto.setN_posti(user.getN_posti());
+        dto.setN_corse(user.getN_corse());
+        return dto;
+    }
+
+    /** Restituisce un ResultDTO d’errore con messaggio */
+    private ResultDTO buildErrorResult(String message) {
+        ResultDTO resultDTO = new ResultDTO();
+        resultDTO.setUser(null);
+        resultDTO.setMessage(message);
+        resultDTO.setResult(ResultDTO.ERRORE);
+        resultDTO.getLog().add(message);
+        return resultDTO;
+    }
+
 
     @RequestMapping(value = "/deleteAutista",
             method = RequestMethod.DELETE,
@@ -305,6 +543,7 @@ public class UserRestController {
         userDTO.setN_ore(user.get().getN_hours());
         userDTO.setEmail_parente(user.get().getEmail_parent());
         userDTO.setNascita(user.get().getData_nascita());
+        userDTO.setN_posti(user.get().getN_posti());
         userRepository.delete(user.get());
         resultDTO.setResult(ResultDTO.OK);
         resultDTO.setMessage("Autista eliminato");
@@ -386,6 +625,7 @@ public class UserRestController {
             userDTO.setEmail_parente("");
             userDTO.setDisponibile(user.get().isAvailable());
             userDTO.setData(userDTO.getData());
+            userDTO.setN_ore(user.get().getN_hours());
         }
         resultDTO.setUser(userDTO);
         return resultDTO;
@@ -435,6 +675,7 @@ public class UserRestController {
             userDTO.setDisponibile(user.get().isAvailable());
             userDTO.setData(userDTO.getData());
             userDTO.setN_ore(user.get().getN_hours());
+            userDTO.setN_posti(user.get().getN_posti());
         }
 
         resultDTO.setUser(userDTO);
@@ -579,6 +820,7 @@ public class UserRestController {
                 if (user.isAvailable()) {
                     list.add(userDTO);
                 }
+                userDTO.setN_posti(user.getN_posti());
             }
 
 
