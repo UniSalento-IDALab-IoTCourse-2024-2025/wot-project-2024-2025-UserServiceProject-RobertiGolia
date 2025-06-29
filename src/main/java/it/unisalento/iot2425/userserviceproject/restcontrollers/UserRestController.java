@@ -215,6 +215,8 @@ public class UserRestController {
         user.ifPresent(u -> {
             userRepository.save(u);
             u.setId(userDTO.getId());
+            u.setName(userDTO.getNome());
+            u.setSurname(userDTO.getCognome());
             u.setUsername(userDTO.getUsername());
             u.setEmail(userDTO.getEmail());
             u.setRole(userDTO.getRuolo());

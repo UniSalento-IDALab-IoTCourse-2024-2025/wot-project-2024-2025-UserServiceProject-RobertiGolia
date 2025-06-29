@@ -51,7 +51,7 @@ public class UserRegistrationRestController {
         //modifica l'id
         //prevede una modifica all'interno del DataBase
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
-        List<User> username = userRepository.findByNameAndSurname(userDTO.getNome(), userDTO.getCognome());
+        Optional<User> username = userRepository.findByUsername(userDTO.getUsername());
         if (!existingUser.isEmpty()) {
             resultDTO.setResult(RegistrationResultDTO.EMAIL_ALREADY_EXISTS);
             resultDTO.setMessage("La mail è già associata ad un altro utente");
