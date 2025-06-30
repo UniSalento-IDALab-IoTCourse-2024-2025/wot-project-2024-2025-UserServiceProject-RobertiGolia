@@ -295,7 +295,6 @@ public class UserRestController {
                 } else {
                     user.setN_corse(user.getN_corse() + 1);
                 }
-                user.setN_posti(userDTO.getN_posti());
 
                 break;
 
