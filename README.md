@@ -19,48 +19,6 @@ La soluzione è progettata per garantire:
 - Scalabilità, per supportare un numero crescente di utenti e corse;
 - Integrazione con servizi di notifica, via email, per aggiornamenti in tempo reale.
 
-## Architettura del Sistema
-
-Il sistema si basa su un'architettura modulare, composta da un backend (microservizi) e un'applicazione mobile sviluppata in React Native, ottimizzata per dispositivi Android e iOS.
-
-### Componenti principali
-
-- **UserServiceProject**: Gestione degli utenti, autenticazione, autorizzazione e aggiornamento dei dati di profilo.
-- **TripServiceProject**: Gestione delle corse, creazione, prenotazione, cancellazione e visualizzazione delle corse disponibili.
-- **ModelServiceProject**: Supporto agli utenti tramite chat integrata per domande frequenti e assistenza.
-- **Frontend**: Applicazione React Native per la fruizione dei servizi da parte degli utenti.
-
-## Repositori dei componenti
-
-- UserServiceProject: [UserServiceProject](https://github.com/UniSalento-IDALab-IoTCourse-2024-2025/wot-project-2024-2025-UserServiceProject-RobertiGolia)
-- TripServiceProject: [TripServiceProject](https://github.com/UniSalento-IDALab-IoTCourse-2024-2025/wot-project-2024-2025-TripServiceProject-RobertiGolia)
-- ModelServiceProject: [ModelServiceProject](https://github.com/UniSalento-IDALab-IoTCourse-2024-2025/wot-project-2024-2025-ModelServiceProject-RobertiGolia)
-
-## FrontEnd
-
-L'applicazione mobile, sviluppata in React Native, permette agli utenti di:
-
-- Visualizzare e prenotare corse disponibili;
-- Gestire il proprio profilo e le proprie prenotazioni;
-- Ricevere notifiche in tempo reale tramite email;
-- Interagire con un chatbot per assistenza rapida.
-
-L'interfaccia è progettata per essere semplice e intuitiva, con schermate dedicate alla visualizzazione delle corse e alla gestione del profilo. Il codice è organizzato in moduli e componenti riutilizzabili, facilitando la manutenzione e l'estensione futura.
-
-### Schermata Profilo
-
-Nella schermata profilo, l'utente può visualizzare i propri dati personali. Se l'utente è un autista, può visualizzare le corse proposte.
-
-![Profilo Utente](ImmaginiReadme/profiloUtente.PNG)
-![Profilo Autista](ImmaginiReadme/profiloAutista.PNG)
-
-### Schermata Corse
-
-Nella sezione corse, è possibile visualizzare tutte le corse disponibili, prenotare una corsa o proporne una nuova.
-
-![Corse Autista](ImmaginiReadme/corseAutista.PNG)
-![Corse Utente](ImmaginiReadme/corseUtente.PNG)
-
 ## Come funziona UserServiceProject
 
 **UserServiceProject** è il microservizio responsabile della gestione degli utenti all'interno della piattaforma Taxi Sociale. Le sue principali funzionalità includono:
