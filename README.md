@@ -45,6 +45,5 @@ La soluzione è progettata per garantire:
 - Spring Security (JWT)
 - MongoDB
 - REST API
-- RabbitMQ (per la comunicazione asincrona tra microservizi)
 
 Questa architettura garantisce sicurezza, scalabilità e facilità di integrazione con gli altri componenti della piattaforma Taxi Sociale.
